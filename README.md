@@ -5,7 +5,7 @@ How to use library 'faster-serializer' (https://github.com/s-a--m/faster-seriali
 
 1. In module-app gradle after 'apply plugin...' insert:
 
-```
+```gradle
 repositories {
 	maven {
 		url 'https://dl.bintray.com/dmitrysamoylenko/fasterserializer/'
@@ -14,8 +14,12 @@ repositories {
 ```
 
 2. In android section insert annotation processor info:
-```
+```gradle
 android {
+	packagingOptions {
+		exclude 'META-INF/license.txt'
+		exclude 'META-INF/LICENSE'
+	}
 ...
 	defaultConfig {
 ...
