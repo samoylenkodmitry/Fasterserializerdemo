@@ -5,16 +5,16 @@ How to use library 'faster-serializer' (https://github.com/s-a--m/faster-seriali
 
 1. In module-app gradle after 'apply plugin...' insert:
 
-
+```
 repositories {
 	maven {
 		url 'https://dl.bintray.com/dmitrysamoylenko/fasterserializer/'
 	}
 }
-
+```
 
 2. In android section insert annotation processor info:
-
+```
 android {
 ...
 	defaultConfig {
@@ -26,9 +26,9 @@ android {
 		}
 
 	}
-
+```
 3. In dependencies:
-
+```
 dependencies {
 ...
 	compile 'android.samutils:faster-serializer:+'// 0.9.5 for current time
@@ -36,3 +36,4 @@ dependencies {
 	annotationProcessor 'android.samutils:processor:+'
 
 }
+```
