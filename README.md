@@ -28,7 +28,7 @@ android {
 	}
 ```
 3. In dependencies:
-```
+```gradle
 dependencies {
 ...
 	compile 'android.samutils:faster-serializer:+'// 0.9.5 for current time
@@ -36,4 +36,50 @@ dependencies {
 	annotationProcessor 'android.samutils:processor:+'
 
 }
+```
+
+Usage:
+
+1. Create POJO
+
+```java
+public class MyPojo {
+
+  @Value
+  public String someString;
+  @Value
+  public int someInt;
+  @Value
+  public MyPojo someOtherData;
+
+}
+```
+
+Note: each annotated field must be non-final public
+
+2. Initialize Serializer before usage:
+
+```java
+		Serializer.setValueMap(new ValueMapFiller());
+```
+Note: class ValueMapFiller is auto generated after first POJO created and build successfully finished
+
+3. Use public method of Serializer:
+
+```java
+		MyPojo testPojo = new MyPojo();
+		testPojo.someString = "some string";
+		testPojo.someInt = 1337;
+
+		Log.d("serializer test", "input pojo to json: "+Jsoner.toString(testPojo));
+
+		//test write
+		byte[] bytesOut = Serializer.toBytes(testPojo);
+
+		Log.d("serializer test", "bytes count: "+bytesOut.length);
+
+		//test read
+		MyPojo testPojoOut = Serializer.read(bytesOut);
+
+		Log.d("serializer test", "out pojo: "+ Jsoner.toString(testPojoOut));
 ```

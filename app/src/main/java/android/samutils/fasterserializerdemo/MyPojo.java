@@ -3,12 +3,13 @@ package android.samutils.fasterserializerdemo;
 
 import android.samutils.fasterserializer.processor.Value;
 
-public class Data {
+public class MyPojo {
 	
 	@Value
-	public String s;
+	public String someString;
 	@Value
-	public int i;
+	public int someInt;
 	@Value
-	public Data d;
+	public MyPojo otherData;
+	
 }
