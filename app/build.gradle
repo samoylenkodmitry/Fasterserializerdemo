@@ -30,10 +30,14 @@ android {
 		exclude 'META-INF/license.txt'
 		exclude 'META-INF/LICENSE'
 	}
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
 }
 
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
+	compile fileTree(include: ['*.jar'], dir: 'libs')
 	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
 		exclude group: 'com.android.support', module: 'support-annotations'
 	})
@@ -41,7 +45,7 @@ dependencies {
 	testCompile 'junit:junit:4.12'
 	compile 'com.android.support.constraint:constraint-layout:1.0.2'
 	compile 'com.android.support:design:25.3.1'
-	compile 'android.samutils:faster-serializer:0.9.5'
-	annotationProcessor 'android.samutils:processor:0.9.5'
-	compile 'android.samutils:processorannotations:0.9.5'
+	compile 'android.samutils:faster-serializer:0.9.6'
+	annotationProcessor 'android.samutils:processor:0.9.6'
+	compile 'android.samutils:processorannotations:0.9.6'
 }
