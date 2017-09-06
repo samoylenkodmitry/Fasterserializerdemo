@@ -42,7 +42,11 @@ public class Example implements Parcelable
             instance.cod = ((String) in.readValue((String.class.getClassLoader())));
             instance.calctime = ((float) in.readValue((float.class.getClassLoader())));
             instance.cnt = ((int) in.readValue((int.class.getClassLoader())));
-            instance.list= ((List[]) in.readArray((List.class.getClassLoader())));
+            int sz=in.readInt();
+            instance.list = new List[sz];
+            for (int i = 0; i < sz; i++) {
+                instance.list[i]=in.readParcelable(List.class.getClassLoader());
+            }
             return instance;
         }
 
@@ -57,7 +61,10 @@ public class Example implements Parcelable
         dest.writeValue(cod);
         dest.writeValue(calctime);
         dest.writeValue(cnt);
-        dest.writeArray(list);
+        dest.writeInt(list.length);
+        for (final List list1 : list) {
+            dest.writeParcelable(list1, 0);
+        }
     }
 
     public int describeContents() {

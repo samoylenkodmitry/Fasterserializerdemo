@@ -1,6 +1,8 @@
 package android.samutils.fasterserializerdemo;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.samutils.fasterserializer.mapping.JacksonJsoner;
 import android.samutils.fasterserializer.mapping.Jsoner;
 import android.samutils.fasterserializer.mapping.Serializer;
@@ -72,6 +74,40 @@ public class MainActivity extends AppCompatActivity {
 			
 			test("serializer read ", () -> Serializer.read(exampleBytes, Example.class));
 			
+			final Bundle container = new Bundle();
+			container.putParcelable("key", example);
+			final Parcelable exampleReadParcel = container.getParcelable("key");
+			Log.e("read from parcel", Jsoner.toString(exampleReadParcel));
+			
+			test("write to bundle", () -> container.putParcelable("key", example));
+			test("read from bundle", () -> container.getParcelable("key"));
+			test("write to parcel and marshall", () -> {
+				final Parcel parcel = Parcel.obtain();
+				parcel.setDataPosition(0);
+				parcel.writeParcelable(example, 0);
+				parcel.marshall();
+				parcel.recycle();
+			});
+			final Parcel parcel = Parcel.obtain();
+			parcel.setDataPosition(0);
+			parcel.writeParcelable(example, 0);
+			final byte[] marshall = parcel.marshall();
+			parcel.recycle();
+			final Parcel readParcel = Parcel.obtain();
+			readParcel.unmarshall(marshall, 0, marshall.length);
+			readParcel.setDataPosition(0);
+			final Example exampleReadFromParcel = readParcel.readParcelable(Example.class.getClassLoader());
+			Log.e("read from parcel: ", Jsoner.toString(exampleReadFromParcel));
+			readParcel.recycle();
+			
+			test("read from parcel", () -> {
+				final Parcel thisparcel = Parcel.obtain();
+				thisparcel.unmarshall(marshall, 0, marshall.length);
+				thisparcel.setDataPosition(0);
+				thisparcel.readParcelable(Example.class.getClassLoader());
+				thisparcel.recycle();
+				
+			});
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}

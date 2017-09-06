@@ -66,7 +66,11 @@ public class List implements Parcelable
             instance.wind = ((Wind) in.readValue((Wind.class.getClassLoader())));
             instance.rain = ((Rain) in.readValue((Rain.class.getClassLoader())));
             instance.clouds = ((Clouds) in.readValue((Clouds.class.getClassLoader())));
-            instance.weather= ((Weather[]) in.readArray((Weather.class.getClassLoader())));
+            int sz=in.readInt();
+            instance.weather = new Weather[sz];
+            for (int i = 0; i < sz; i++) {
+                instance.weather[i]=in.readParcelable(Weather.class.getClassLoader());
+            }
             return instance;
         }
 
@@ -86,7 +90,10 @@ public class List implements Parcelable
         dest.writeValue(wind);
         dest.writeValue(rain);
         dest.writeValue(clouds);
-        dest.writeArray(weather);
+        dest.writeInt(weather.length);
+        for (final Weather weather1 : weather) {
+            dest.writeParcelable(weather1, 0);
+        }
     }
 
     public int describeContents() {
