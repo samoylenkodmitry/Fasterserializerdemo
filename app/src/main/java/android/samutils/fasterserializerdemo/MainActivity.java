@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -23,10 +24,14 @@ public class MainActivity extends AppCompatActivity {
 	
 	private static final ExecutorService SINGLE_POOL_EXECUTOR =
 		Executors.newSingleThreadExecutor();
+	private TextView mOutText;
 	
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.activity_main);
+		mOutText = (TextView) findViewById(R.id.out_text);
 		
 		final IValueMap valueMap = new ValueMapFiller();
 		Serializer.setValueMap(valueMap);
@@ -36,17 +41,17 @@ public class MainActivity extends AppCompatActivity {
 		testPojo.someString = "some string";
 		testPojo.someInt = 1337;
 		
-		Log.e("serializer test", "input pojo to json: " + Jsoner.toString(testPojo));
+		out("serializer test", "input pojo to json: " + Jsoner.toString(testPojo));
 		
 		//test write
 		final byte[] bytesOut = Serializer.toBytes(testPojo, MyPojo.class);
 		
-		Log.e("serializer test", "bytes count: " + bytesOut.length);
+		out("serializer test", "bytes count: " + bytesOut.length);
 		
 		//test read
 		final MyPojo testPojoOut = Serializer.read(bytesOut, MyPojo.class);
 		
-		Log.e("serializer test", "out pojo: " + Jsoner.toString(testPojoOut));
+		out("serializer test", "out pojo: " + Jsoner.toString(testPojoOut));
 		
 		try {
 			test("jacksonjsoner read", () -> {
@@ -66,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
 			
 			final byte[] exampleBytes = Serializer.toBytes(example, Example.class);
 			
-			Log.e(" example", Jsoner.toString(Serializer.read(exampleBytes, Example.class)));
+			out(" example", Jsoner.toString(Serializer.read(exampleBytes, Example.class)));
 			
-			Log.e("example bytes", " " + exampleBytes.length);
+			out("example bytes", " " + exampleBytes.length);
 			
 			test("serializer toBytes ", () -> Serializer.toBytes(example, Example.class));
 			
@@ -77,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 			final Bundle container = new Bundle();
 			container.putParcelable("key", example);
 			final Parcelable exampleReadParcel = container.getParcelable("key");
-			Log.e("read from parcel", Jsoner.toString(exampleReadParcel));
+			out("read from parcel", Jsoner.toString(exampleReadParcel));
 			
 			test("write to bundle", () -> container.putParcelable("key", example));
 			test("read from bundle", () -> container.getParcelable("key"));
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 			readParcel.unmarshall(marshall, 0, marshall.length);
 			readParcel.setDataPosition(0);
 			final Example exampleReadFromParcel = readParcel.readParcelable(Example.class.getClassLoader());
-			Log.e("read from parcel: ", Jsoner.toString(exampleReadFromParcel));
+			out("read from parcel: ", Jsoner.toString(exampleReadFromParcel));
 			readParcel.recycle();
 			
 			test("read from parcel", () -> {
@@ -108,11 +113,23 @@ public class MainActivity extends AppCompatActivity {
 				thisparcel.recycle();
 				
 			});
+			
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void out(final String tag, final String msg) {
+		runOnUiThread(() ->
+			{
+				if (mOutText != null) {
+					mOutText.append(tag + ": " + msg + "\n\n\n");
+				} else {
+					Log.e(tag, msg);
+				}
+			}
 		
-		setContentView(R.layout.activity_main);
+		);
 	}
 	
 	@Override
@@ -137,14 +154,14 @@ public class MainActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private static void test(final String msg, final Runnable r) {
+	private void test(final String msg, final Runnable r) {
 		SINGLE_POOL_EXECUTOR.execute(() -> {
 			final int n = 10000;
 			final long t = System.nanoTime();
 			for (int i = 0; i < n; i++) {
 				r.run();
 			}
-			Log.e("test", msg + ": " + (System.nanoTime() - t) / n);
+			out("test", msg + ": " + (System.nanoTime() - t) / n);
 		});
 	}
 }
