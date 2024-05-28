@@ -3,7 +3,7 @@ Demo application demonstrates usage of 'faster-serializer' library
 
 https://android-arsenal.com/details/1/6511
 
-How to use library 'faster-serializer' (https://github.com/s-a--m/faster-serializer)
+How to use library 'faster-serializer' ([https://github.com/s-a--m/faster-serializer](https://github.com/samoylenkodmitry/faster-serializer))
 
 1. In module-app gradle after 'apply plugin...' insert:
 
